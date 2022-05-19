@@ -14,64 +14,67 @@ if not creds or creds.invalid:
     flow = client.flow_from_clientsecrets('client_secrets.json', SCOPES)
     creds = tools.run_flow(flow, store)
 
-form_service = discovery.build('forms', 'v1', http=creds.authorize(
-    Http()), discoveryServiceUrl=DISCOVERY_DOC, static_discovery=False)
+form_service = discovery.build('forms', 'v1', http=creds.authorize(Http()), discoveryServiceUrl=DISCOVERY_DOC, static_discovery=False)
 
 # https://developers.google.com/forms/api/reference/rest/v1/forms
-def create_form():
+def create_form(docTitle="",title="",descr=""):
     FORM = {
         "info": {
-            "documentTitle": "",
-            "title": "",
-            "description": "",
+            "documentTitle": docTitle,
+            "title": title,
+            "description": descr,
         }
     }
 
     result = form_service.forms().create(body=FORM).execute()
     return result
 
-def create_question(result):
+def create_choiceQuestion(result,title="",descr="",required=True,type="RADIO",options=[{"value": ""}],shuffle=True,idx=0):
     QUESTION = {
         "requests": [{
             "createItem:": {
                 "item": {
-                    "title": "",
-                    "description": "",
+                    "title": title,
+                    "description": descr,
                     "questionItem": {
                         "question": {
-                            "required": True,
+                            "required": required,
                             "choiceQuestion": {
-                                "type": "RADIO",
-                                "options": [
-                                    {"value": ""}
-                                ],
-                                "shuffle": True
+                                "type": type,
+                                "options": options,
+                                "shuffle": shuffle
                             }
                         }
                     }
                 },
                 "location": {
-                    "index": 0
+                    "index": idx
                 }
-            },
+            }
+        }]
+    }
 
+    question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=QUESTION).execute()
+    return question_setting
 
-            
+def create_textQuestion(result,title="",descr="",required=True,para=True,idx=0):
+    QUESTION = {
+        "requests": [{
             "createItem:": {
                 "item": {
-                    "title": "",
-                    "description": "",
+                    "title": title,
+                    "description": descr,
                     "questionItem": {
                         "question": {
-                            "required": True,
+                            "required": required,
                             "textQuestion": {
-                                "paragraph": True
+                                "paragraph": para
                             }
                         }
                     }
                 },
                 "location": {
-                    "index": 1
+                    "index": idx
                 }
             }
         }]
