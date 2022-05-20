@@ -5,6 +5,7 @@ from httplib2 import Http
 from oauth2client import client, file, tools
 from pyparsing import restOfLine
 
+id='1cSfuhv4v1soyiMWu9aHNyFitBrlLgiZ51G_WJP5KuMo'
 SCOPES = "https://www.googleapis.com/auth/forms.body"
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
 
@@ -29,7 +30,7 @@ def create_form(docTitle="",title="",descr=""):
     result = form_service.forms().create(body=FORM).execute()
     return result
 
-def create_choiceQuestion(result,title="",descr="",required=True,type="RADIO",options=[{"value": ""}],shuffle=True,idx=0):
+def create_choiceQuestion(formId,title="",descr="",required=True,point=0,ans=[{"value": ""}],type="RADIO",options=[{"value": ""}],shuffle=True,idx=0):
     QUESTION = {
         "requests": [{
             "createItem:": {
@@ -39,6 +40,12 @@ def create_choiceQuestion(result,title="",descr="",required=True,type="RADIO",op
                     "questionItem": {
                         "question": {
                             "required": required,
+                            "grading": {
+                                "pointValue": point,
+                                "correctAnswers": {
+                                    "answers": ans
+                                }
+                            },
                             "choiceQuestion": {
                                 "type": type,
                                 "options": options,
@@ -54,10 +61,10 @@ def create_choiceQuestion(result,title="",descr="",required=True,type="RADIO",op
         }]
     }
 
-    question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=QUESTION).execute()
+    question_setting = form_service.forms().batchUpdate(formId=formId, body=QUESTION).execute()
     return question_setting
 
-def create_textQuestion(result,title="",descr="",required=True,para=True,idx=0):
+def create_textQuestion(formId,title="",descr="",required=True,point=0,ans=[{"value": ""}],para=True,idx=0):
     QUESTION = {
         "requests": [{
             "createItem:": {
@@ -67,6 +74,12 @@ def create_textQuestion(result,title="",descr="",required=True,para=True,idx=0):
                     "questionItem": {
                         "question": {
                             "required": required,
+                            "grading": {
+                                "pointValue": point,
+                                "correctAnswers": {
+                                    "answers": ans
+                                }
+                            },
                             "textQuestion": {
                                 "paragraph": para
                             }
@@ -80,11 +93,15 @@ def create_textQuestion(result,title="",descr="",required=True,para=True,idx=0):
         }]
     }
 
-    question_setting = form_service.forms().batchUpdate(formId=result["formId"], body=QUESTION).execute()
+    question_setting = form_service.forms().batchUpdate(formId=formId, body=QUESTION).execute()
     return question_setting
 
-def get_form(result):
-    get_result = form_service.forms().get(formId=result["formId"]).execute()
+def get_form(formId):
+    get_result = form_service.forms().get(formId=formId).execute()
     print(get_result)
     return get_result
     
+def get_responses(formId):
+    res = service.forms().responses().list(formId=formId).execute()
+    print(res)
+    return res
