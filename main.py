@@ -30,16 +30,16 @@ def create_form(docTitle="",title="",descr=""):
     result = form_service.forms().create(body=FORM).execute()
     return result
 
-def create_choiceQuestion(formId,title="",descr="",required=True,point=0,ans=[{"value": ""}],type="RADIO",options=[{"value": ""}],shuffle=True,idx=0):
+def create_choiceQuestion(id,title="",descr="",required=True,point=0,ans=[{"value": ""}],Type="RADIO",options=[{"value": ""}],shuffle=True,idx=0):
     QUESTION = {
         "requests": [{
-            "createItem:": {
+            "createItem": {
                 "item": {
                     "title": title,
                     "description": descr,
                     "questionItem": {
                         "question": {
-                            "required": required,
+                            "required": required,    
                             "grading": {
                                 "pointValue": point,
                                 "correctAnswers": {
@@ -47,7 +47,7 @@ def create_choiceQuestion(formId,title="",descr="",required=True,point=0,ans=[{"
                                 }
                             },
                             "choiceQuestion": {
-                                "type": type,
+                                "type": Type,
                                 "options": options,
                                 "shuffle": shuffle
                             }
@@ -61,19 +61,19 @@ def create_choiceQuestion(formId,title="",descr="",required=True,point=0,ans=[{"
         }]
     }
 
-    question_setting = form_service.forms().batchUpdate(formId=formId, body=QUESTION).execute()
+    question_setting = form_service.forms().batchUpdate(formId=id, body=QUESTION).execute()
     return question_setting
 
-def create_textQuestion(formId,title="",descr="",required=True,point=0,ans=[{"value": ""}],para=True,idx=0):
+def create_textQuestion(id,title="",descr="",required=True,point=0,ans=[{"value": ""}],para=True,idx=0):
     QUESTION = {
         "requests": [{
-            "createItem:": {
+            "createItem": {
                 "item": {
                     "title": title,
                     "description": descr,
                     "questionItem": {
                         "question": {
-                            "required": required,
+                            "required": required,    
                             "grading": {
                                 "pointValue": point,
                                 "correctAnswers": {
@@ -93,15 +93,17 @@ def create_textQuestion(formId,title="",descr="",required=True,point=0,ans=[{"va
         }]
     }
 
-    question_setting = form_service.forms().batchUpdate(formId=formId, body=QUESTION).execute()
+    question_setting = form_service.forms().batchUpdate(formId=id, body=QUESTION).execute()
     return question_setting
 
-def get_form(formId):
-    get_result = form_service.forms().get(formId=formId).execute()
+def get_form(id):
+    get_result = form_service.forms().get(formId=id).execute()
     print(get_result)
     return get_result
     
-def get_responses(formId):
-    res = service.forms().responses().list(formId=formId).execute()
+def get_responses(id):
+    res = service.forms().responses().list(formId=id).execute()
     print(res)
     return res
+
+    
