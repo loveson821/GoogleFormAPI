@@ -19,18 +19,28 @@ form_service = discovery.build('forms', 'v1', http=creds.authorize(Http()), disc
 # https://developers.google.com/forms/api/reference/rest/v1/forms
 def create_form(docTitle="",title="",descr=""):
     FORM = {
-        "settings": {
-            "quizSettings": {
-                "isQuiz": True
-            }
-        },
         "info": {
             "documentTitle": docTitle,
             "title": title,
             "description": descr,
         }
     }
+    setting = {
+        "requests": [
+            {
+                "updateSettings": {
+                    "settings": {
+                        "quizSettings": {
+                            "isQuiz": True
+                        }
+                    },
+                    "updateMask": "quizSettings.isQuiz"
+                }
+            }
+        ]
+    }
     result = form_service.forms().create(body=FORM).execute()
+    form_service.forms().batchUpdate(formId=id, body=setting).execute()
     return result
 
 def create_choiceQuestion(id,title="",descr="",required=True,point=0,ans=[{"value": ""}],Type="RADIO",options=[{"value": ""}],shuffle=True,idx=0):
