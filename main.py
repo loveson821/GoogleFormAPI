@@ -6,7 +6,7 @@ from oauth2client import client, file, tools
 from pyparsing import restOfLine
 
 id='1cSfuhv4v1soyiMWu9aHNyFitBrlLgiZ51G_WJP5KuMo'
-SCOPES = "https://www.googleapis.com/auth/forms.body"
+SCOPES = ["https://www.googleapis.com/auth/forms.body ", "https://www.googleapis.com/auth/drive"]
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
 
 store = file.Storage('token.json')
@@ -102,8 +102,11 @@ def get_form(id):
     return get_result
     
 def get_responses(id):
-    res = service.forms().responses().list(formId=id).execute()
+    res = form_service.forms().responses().list(formId=id).execute()
     print(res)
     return res
 
-    
+def get_link(id):
+    link = get_form(id)['responderUri']
+    print(link)
+    return link
