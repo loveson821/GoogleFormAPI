@@ -5,7 +5,6 @@ from httplib2 import Http
 from oauth2client import client, file, tools
 from pyparsing import restOfLine
 
-id='1cSfuhv4v1soyiMWu9aHNyFitBrlLgiZ51G_WJP5KuMo'
 SCOPES = ["https://www.googleapis.com/auth/forms.body ", "https://www.googleapis.com/auth/drive"]
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
 
@@ -98,15 +97,12 @@ def create_textQuestion(id,title="",descr="",required=True,point=0,ans=[{"value"
 
 def get_form(id):
     get_result = form_service.forms().get(formId=id).execute()
-    print(get_result)
     return get_result
     
 def get_responses(id):
     res = form_service.forms().responses().list(formId=id).execute()
-    print(res)
     return res
 
 def get_link(id):
     link = get_form(id)['responderUri']
-    print(link)
     return link
