@@ -19,13 +19,17 @@ form_service = discovery.build('forms', 'v1', http=creds.authorize(Http()), disc
 # https://developers.google.com/forms/api/reference/rest/v1/forms
 def create_form(docTitle="",title="",descr=""):
     FORM = {
+        "settings": {
+            "quizSettings": {
+                "isQuiz": True
+            }
+        },
         "info": {
             "documentTitle": docTitle,
             "title": title,
             "description": descr,
         }
     }
-
     result = form_service.forms().create(body=FORM).execute()
     return result
 
