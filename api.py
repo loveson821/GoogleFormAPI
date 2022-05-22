@@ -43,7 +43,8 @@ def create_quiz(data: quiz):
 
 @app.post('/mcq')
 def create_mcq(data: mcq):
-    return data
+    question_setting = create_choiceQuestion(data.formid, data.title, data.descr, data.required, data.point, data.ans, data.Type, data.options, data.shuffle, data.idx)
+    return question_setting
 
 @app.post('/tq')
 def create_textq(data: textq):
