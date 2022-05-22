@@ -80,7 +80,7 @@ def create_choiceQuestion(id,question="",descr="",required=True,point=0,ans=[{"v
     question_setting = form_service.forms().batchUpdate(formId=id, body=QUESTION).execute()
     return question_setting
 
-def create_textQuestion(id,question="",descr="",required=True,point=0,ans=[{"value": ""}],para=True,idx=0):
+def create_textQuestion(id,question="",descr="",required=True,point=0,ans=[{}],para=True,idx=0):
     QUESTION = {
         "requests": [{
             "createItem": {
@@ -118,15 +118,33 @@ def get_form(id):
     
 def get_responses(id):
     form = get_form(id)
-    quest_id = {}
+    quest = {}
     items = form['items']
     for item in items:
         qid = item['questionItem']['question']['questionId']
-        question = item['title']
-        quest_id[qid] = question
-    res = form_service.forms().responses().list(formId=id).execute()
+        quest[qid] = {'title': item['title'], 'correctAnswer': item['questionItem']['question']['grading']['correctAnswers']}
 
-    return res
+    res = form_service.forms().responses().list(formId=id).execute()
+    ress = []
+
+    for r in res['responses']:
+        tmp = {
+            "responseId": r['responseId']
+        }
+        for q in quest:
+            if q not in r['answers']:
+                continue
+            tmp[quest[q]['title']] = {
+                    "questionId": q,
+                    "answer": r['answers'][q]['textAnswers']['answers'],
+                    "correctAnswer": quest[q]['correctAnswer'],
+                    "score": r['answers'][q]['grade']['score'] if 'score' in r['answers'][q]['grade'] else 0
+                }
+            r['answers'][quest[q]['title']] = r['answers'].pop(q)
+        tmp["totalScore"] = r['totalScore'] if 'totalScore' in r else 0
+        ress.append(tmp)
+
+    return ress
 
 def get_link(id):
     link = get_form(id)['responderUri']
