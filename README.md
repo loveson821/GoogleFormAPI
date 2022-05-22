@@ -13,7 +13,7 @@ python -m venv .venv
 pip install -r requirements.txt  
 ```
 
-# How to use
+# How to start
 ```
 uvicorn api:app
 ```
