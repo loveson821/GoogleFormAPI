@@ -1,9 +1,6 @@
-from __future__ import print_function
-
 from apiclient import discovery
 from httplib2 import Http
 from oauth2client import client, file, tools
-from pyparsing import restOfLine
 import os
 
 SCOPES = ["https://www.googleapis.com/auth/forms.body ", "https://www.googleapis.com/auth/drive"]
