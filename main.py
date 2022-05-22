@@ -137,7 +137,6 @@ def get_responses(id):
                     "correctAnswer": quest[q]['correctAnswer'],
                     "score": r['answers'][q]['grade']['score'] if 'score' in r['answers'][q]['grade'] else 0
                 }
-            r['answers'][quest[q]['title']] = r['answers'].pop(q)
         tmp["totalScore"] = r['totalScore'] if 'totalScore' in r else 0
         ress.append(tmp)
 
