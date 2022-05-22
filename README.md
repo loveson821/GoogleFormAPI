@@ -14,6 +14,6 @@ pip install -r requirements.txt
 ```
 
 # How to use
-'''
+```
 uvicorn api:app
-'''
+```
