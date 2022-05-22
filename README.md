@@ -14,6 +14,7 @@ pip install -r requirements.txt
 ```
 
 # How to start
+run
 ```
 uvicorn api:app
 ```
