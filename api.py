@@ -3,12 +3,18 @@ from pydantic import BaseModel
 
 from main import *
 
-app = FastAPI()
+tags_metadata = [
+    {
+        "name": "",
+        "description": ""
+    }
+]
+
+app = FastAPI(openapi_tags=tags_metadata)
 
 class quiz(BaseModel):
     docTitle: str
     title: str
-    descr: str = None
 
 class mcq(BaseModel):
     formid: str
@@ -16,9 +22,9 @@ class mcq(BaseModel):
     descr: str = None
     required: bool = True
     point: int = 0
-    ans: list = [{"value":""}]
+    ans: list
     Type: str = "RADIO"
-    options: list = [{"value":""}]
+    options: list
     shuffle: bool = True
     idx: int = 0
 
@@ -32,13 +38,9 @@ class textq(BaseModel):
     para: bool = True
     idx: int = 0
 
-@app.get('/')
-def home():
-    return {"data": "test"}
-
 @app.post('/quiz')
 def create_quiz(data: quiz):
-    result = create_form(data.docTitle, data.title, data.descr)
+    result = create_form(data.docTitle, data.title)
     return result
 
 @app.post('/mcq')
@@ -48,6 +50,8 @@ def create_mcq(data: mcq):
 
 @app.post('/tq')
 def create_textq(data: textq):
+    if data.para and len(data.ans[0])>0:
+        return {"Error": "Correct answer may only be specified for short-test question. If you want to specifie correct answer, please set para=false"}
     question_setting = create_textQuestion(data.formid, data.title, data.descr, data.required, data.point, data.ans, data.para, data.idx)
     return question_setting
 

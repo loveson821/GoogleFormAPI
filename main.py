@@ -16,12 +16,11 @@ else:
 form_service = discovery.build('forms', 'v1', http=creds.authorize(Http()), discoveryServiceUrl=DISCOVERY_DOC, static_discovery=False)
 
 # https://developers.google.com/forms/api/reference/rest/v1/forms
-def create_form(docTitle="",title="",descr=""):
+def create_form(docTitle="",title=""):
     FORM = {
         "info": {
             "documentTitle": docTitle,
-            "title": title,
-            "description": descr,
+            "title": title
         }
     }
     setting = {
@@ -39,8 +38,10 @@ def create_form(docTitle="",title="",descr=""):
         ]
     }
     result = form_service.forms().create(body=FORM).execute()
+
     id = result['formId']
     form_service.forms().batchUpdate(formId=id, body=setting).execute()
+
     return result
 
 def create_choiceQuestion(id,question="",descr="",required=True,point=0,ans=[{"value": ""}],Type="RADIO",options=[{"value": ""}],shuffle=True,idx=0):
@@ -90,7 +91,7 @@ def create_textQuestion(id,question="",descr="",required=True,point=0,ans=[{}],p
                             "grading": {
                                 "pointValue": point,
                                 "correctAnswers": {
-                                    "answers": ans
+                                    "answers": ans if not para else [{}]
                                 }
                             },
                             "textQuestion": {
@@ -122,21 +123,25 @@ def get_responses(id):
         quest[qid] = {'title': item['title'], 'correctAnswer': item['questionItem']['question']['grading']['correctAnswers']}
 
     res = form_service.forms().responses().list(formId=id).execute()
+    if 'responses' not in res:
+        return res
+
     ress = []
 
     for r in res['responses']:
         tmp = {
-            "responseId": r['responseId']
+            "responseId": r['responseId'],
+            "questions": []
         }
         for q in quest:
             if q not in r['answers']:
                 continue
-            tmp[quest[q]['title']] = {
+            tmp['questions'].append({quest[q]['title'] : {
                     "questionId": q,
                     "answer": r['answers'][q]['textAnswers']['answers'],
                     "correctAnswer": quest[q]['correctAnswer'],
                     "score": r['answers'][q]['grade']['score'] if 'score' in r['answers'][q]['grade'] else 0
-                }
+                }})
         tmp["totalScore"] = r['totalScore'] if 'totalScore' in r else 0
         ress.append(tmp)
 
