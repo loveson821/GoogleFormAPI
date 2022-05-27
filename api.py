@@ -85,24 +85,24 @@ def post_id(formId: postid):
 def home():
     return id
 
-@app.post('/mcq')
-def create_mcq(data: mcq):
-    question_setting = create_choiceQuestion(data.formid, data.title, data.descr, data.required, data.point, data.ans, data.Type, data.options, data.shuffle, data.idx)
-    return question_setting
+# @app.post('/mcq')
+# def create_mcq(data: mcq):
+#     question_setting = create_choiceQuestion(data.formid, data.title, data.descr, data.required, data.point, data.ans, data.Type, data.options, data.shuffle, data.idx)
+#     return question_setting
 
-@app.post('/tq')
-def create_textq(datum: testqList):
-    global id
-    quest = []
-    for data in datum.questions:
-        if not len(data.formid):
-            data.formid = id
-        if data.para :
-            data.ans = [{}]
-            # return {"Error": "Correct answer may only be specified for short-test question. If you want to specifie correct answer, please set para=false"}
-        question_setting = create_textQuestion(data.formid, data.title, data.descr, data.required, data.point, data.ans, data.para, data.idx)
-        quest.append(question_setting)
-    return quest
+# @app.post('/tq')
+# def create_textq(datum: testqList):
+#     global id
+#     quest = []
+#     for data in datum.questions:
+#         if not len(data.formid):
+#             data.formid = id
+#         if data.para :
+#             data.ans = [{}]
+#             # return {"Error": "Correct answer may only be specified for short-test question. If you want to specifie correct answer, please set para=false"}
+#         question_setting = create_textQuestion(data.formid, data.title, data.descr, data.required, data.point, data.ans, data.para, data.idx)
+#         quest.append(question_setting)
+#     return quest
 
 @app.get('/getform')
 def getform(id: str):
