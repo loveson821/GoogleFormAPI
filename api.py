@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import List
 
 from main import *
 
@@ -40,6 +41,9 @@ class textq(BaseModel):
     para: bool = True
     idx: int = 0
 
+class testqList(BaseModel):
+    questions: List[textq]
+
 @app.post('/quiz')
 def create_quiz(data: quiz):
     result = create_form(data.docTitle, data.title, data.descr)
@@ -51,11 +55,14 @@ def create_mcq(data: mcq):
     return question_setting
 
 @app.post('/tq')
-def create_textq(data: textq):
-    if data.para and len(data.ans[0])>0:
-        return {"Error": "Correct answer may only be specified for short-test question. If you want to specifie correct answer, please set para=false"}
-    question_setting = create_textQuestion(data.formid, data.title, data.descr, data.required, data.point, data.ans, data.para, data.idx)
-    return question_setting
+def create_textq(datum: testqList):
+    quest = []
+    for data in datum['questions']:
+        if data.para and len(data.ans[0])>0:
+            return {"Error": "Correct answer may only be specified for short-test question. If you want to specifie correct answer, please set para=false"}
+        question_setting = create_textQuestion(data.formid, data.title, data.descr, data.required, data.point, data.ans, data.para, data.idx)
+        quest.append(question_setting)
+    return quest
 
 @app.get('/getform')
 def getform(id: str):
