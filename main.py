@@ -16,7 +16,7 @@ else:
 form_service = discovery.build('forms', 'v1', http=creds.authorize(Http()), discoveryServiceUrl=DISCOVERY_DOC, static_discovery=False)
 
 # https://developers.google.com/forms/api/reference/rest/v1/forms
-def create_form(docTitle="",title=""):
+def create_form(docTitle="",title="",descr=""):
     FORM = {
         "info": {
             "documentTitle": docTitle,
@@ -37,10 +37,24 @@ def create_form(docTitle="",title=""):
             }
         ]
     }
+    
+    des = {
+        "requests": [
+            {
+                "updateFormInfo": {
+                    "info": {
+                        "description": descr
+                    },
+                    "updateMask": "description"
+                }
+            }
+        ]
+    }
     result = form_service.forms().create(body=FORM).execute()
 
     id = result['formId']
     form_service.forms().batchUpdate(formId=id, body=setting).execute()
+    form_service.forms().batchUpdate(formId=id, body=des).execute()
 
     return result
 

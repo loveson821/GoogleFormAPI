@@ -16,6 +16,7 @@ app = FastAPI(openapi_tags=tags_metadata)
 class quiz(BaseModel):
     docTitle: str
     title: str
+    descr: str = ""
 
 class mcq(BaseModel):
     formid: str
@@ -41,7 +42,7 @@ class textq(BaseModel):
 
 @app.post('/quiz')
 def create_quiz(data: quiz):
-    result = create_form(data.docTitle, data.title)
+    result = create_form(data.docTitle, data.title, data.descr)
     return result
 
 @app.post('/mcq')
