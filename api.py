@@ -73,7 +73,7 @@ def create_quiz(data: quiz):
     result = create_form(data.docTitle, data.title, data.descr)
     global id
     id = result['formId']
-    return id
+    return result
 
 @app.post('/id')
 def post_id(formId: postid):
@@ -128,7 +128,7 @@ def gen(form: genQuiz):
         else:
             question_setting = create_choiceQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.Type, q.options, q.shuffle, q.idx)
 
-    return question_setting
+    return result["responderUri"]
 
 
 if __name__ == '__main__':
