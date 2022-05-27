@@ -128,7 +128,7 @@ def gen(form: genQuiz):
         else:
             question_setting = create_choiceQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.Type, q.options, q.shuffle, q.idx)
 
-    return result["responderUri"]
+    return {"id": id, "link": result["responderUri"]}
 
 
 if __name__ == '__main__':
