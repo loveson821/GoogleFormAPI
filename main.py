@@ -104,9 +104,9 @@ def create_textQuestion(id,question="",descr="",required=True,point=0,ans=[{}],p
                             "required": required,    
                             "grading": {
                                 "pointValue": point,
-                                "correctAnswers": {
-                                    "answers": ans if not para else [{}]
-                                }
+                                # "correctAnswers": {
+                                #     "answers": ans if not para else [{}]
+                                # }
                             },
                             "textQuestion": {
                                 "paragraph": para
@@ -120,6 +120,9 @@ def create_textQuestion(id,question="",descr="",required=True,point=0,ans=[{}],p
             }
         }]
     }
+
+    if not para:
+        QUESTION['requests'][0]["createItem"]['item']['questionItem']['question']['grading']["correctAnswers"]={"answers": ans }
 
     question_setting = form_service.forms().batchUpdate(formId=id, body=QUESTION).execute()
     return question_setting
