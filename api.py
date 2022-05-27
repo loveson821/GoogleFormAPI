@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -64,3 +65,6 @@ def getform(id: str):
 def getresponses(id: str):
     res = get_responses(id)
     return res
+
+if __name__ == '__main__':
+    uvicorn.run('api:app', host='0.0.0.0', port=8000, reload=True)
