@@ -3,7 +3,7 @@ from model import *
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from main import *
+import services as _services
 
 tags_metadata = [
     {
@@ -24,11 +24,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
 @app.post('/quiz')
 def create_quiz(data: quiz):
-    result = create_form(data.docTitle, data.title, data.descr)
+    result = _services.create_form(data.docTitle, data.title, data.descr)
     global id
     id = result['formId']
     return result
@@ -46,25 +44,25 @@ def appquest(data: questList):
         if not len(q.formid):
             q.formid = id
         if not len(q.Type):
-            question_setting = create_textQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.para, q.idx)
+            _services.create_textQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.para, q.idx)
         else:
-            question_setting = create_choiceQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.Type, q.options, q.shuffle, q.idx)
+            _services.create_choiceQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.Type, q.options, q.shuffle, q.idx)
 
     return "done"
 
 @app.get('/getform')
 def getform(id: str):
-    res = get_form(id)
+    res = _services.get_form(id)
     return res
 
 @app.get('/getresponses')
 def getresponses(id: str):
-    res = get_responses(id)
+    res = _services.get_responses(id)
     return res
 
 @app.post('/generate')
 def gen(form: genQuiz):
-    result = create_form(form.docTitle, form.title, form.descr)
+    result = _services.create_form(form.docTitle, form.title, form.descr)
     global id
     id = result['formId']
 
@@ -72,9 +70,9 @@ def gen(form: genQuiz):
         if not len(q.formid):
             q.formid = id
         if not len(q.Type):
-            question_setting = create_textQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.para, q.idx)
+            _services.create_textQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.para, q.idx)
         else:
-            question_setting = create_choiceQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.Type, q.options, q.shuffle, q.idx)
+            _services.create_choiceQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.Type, q.options, q.shuffle, q.idx)
 
     return {"id": id, "link": result["responderUri"]}
 
