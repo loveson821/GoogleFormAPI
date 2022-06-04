@@ -34,6 +34,7 @@ class genQuiz(_pydantic.BaseModel):
     date: str
     questions: List[quest]
 
+# Users Authorization
 class _UserBase(_pydantic.BaseModel):
     username: str
 
@@ -49,6 +50,7 @@ class User(_UserBase):
     class Config:
         orm_mode = True
 
+# Form
 class _FormBase(_pydantic.BaseModel):
     form_id: str
     link: str

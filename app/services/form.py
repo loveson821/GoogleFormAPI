@@ -165,8 +165,3 @@ def get_responses(form_id):
 
     return ress
 
-def get_link(form_id):
-    link = get_form(form_id)['responderUri']
-    return link
-
-

@@ -4,9 +4,9 @@ import sqlalchemy as _sql
 import sqlalchemy.orm as _orm
 import passlib.hash as _hash
 
-import database as _database
+import db as _db
 
-class User(_database.Base):
+class User(_db.Base):
     __tablename__ = "users"
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)
     username = _sql.Column(_sql.String, unique=True, index=True)
@@ -18,7 +18,7 @@ class User(_database.Base):
         return _hash.bcrypt.verify(password, self.hashed_password)
 
 
-class form(_database.Base):
+class form(_db.Base):
     __tablename__ = "forms"
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)
     owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))

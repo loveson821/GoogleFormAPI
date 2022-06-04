@@ -1,17 +1,21 @@
 import fastapi as _fastapi
 import fastapi.security as _security
-import database as _database
 from models import models as _models, schemas as _schemas
+import db as _db
 import sqlalchemy.orm as _orm
 import passlib.hash as _hash
 import jwt as _jwt
 
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
 oauth2schema = _security.OAuth2PasswordBearer("/user/token")
 
-JWT_SECRET = "TEST"
+JWT_SECRET = os.getenv('JWT_SECRET')
 
 def get_db():
-    db = _database.SessionLocal()
+    db = _db.SessionLocal()
     try:
         yield db
     finally:
