@@ -1,6 +1,6 @@
 import datetime as _dt
 import pydantic as _pydantic
-from typing import List
+from typing import List, Optional
 
 class quiz(_pydantic.BaseModel):
     docTitle: str
@@ -55,6 +55,7 @@ class _FormBase(_pydantic.BaseModel):
     title: str
     by: str
     date: str
+    text: Optional[str]
 
 class FormCreate(_FormBase):
     pass

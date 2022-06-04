@@ -5,7 +5,6 @@ import sqlalchemy.orm as _orm
 import passlib.hash as _hash
 
 import database as _database
-import services as _services
 
 class User(_database.Base):
     __tablename__ = "users"
@@ -26,6 +25,7 @@ class form(_database.Base):
     form_id = _sql.Column(_sql.String, index=True)
     link = _sql.Column(_sql.String, index=True)
     title = _sql.Column(_sql.String, index=True)
+    text = _sql.Column(_sql.String, index=True)
     by = _sql.Column(_sql.String, index=True, default="")
     date = _sql.Column(_sql.String, default="")
     date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
