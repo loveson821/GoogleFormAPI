@@ -1,32 +1,34 @@
-import pydantic as _pydantic
-from typing import List
+import datetime as _dt
 
-class quiz(_pydantic.BaseModel):
-    docTitle: str
-    title: str
-    descr: str = ""
+import sqlalchemy as _sql
+import sqlalchemy.orm as _orm
+import passlib.hash as _hash
 
-class postid(_pydantic.BaseModel):
-    id: str
+import database as _database
 
-class quest(_pydantic.BaseModel):
-    formid: str = ""
-    title: str
-    descr: str = ""
-    required: bool = True
-    point: int = 0
-    ans: list = [{}]
-    para: bool = True
-    Type: str = ""
-    options: list = [{}]
-    shuffle: bool = True
-    idx: int = 0
 
-class questList(_pydantic.BaseModel):
-    questions: List[quest]
+class User(_database.Base):
+    __tablename__ = "users"
+    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
+    username = _sql.Column(_sql.String, unique=True, index=True)
+    hashed_password = _sql.Column(_sql.String)
 
-class genQuiz(_pydantic.BaseModel):
-    docTitle: str
-    title: str
-    descr: str = ""
-    questions: List[quest]
+    fomrs = _orm.relationship("form", back_populates="owner")
+
+    def verify_password(self, password: str):
+        return _hash.bcrypt.verify(password, self.hashed_password)
+
+
+class form(_database.Base):
+    __tablename__ = "forms"
+    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
+    owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
+    form_id = _sql.Column(_sql.String, index=True)
+    link = _sql.Column(_sql.String, index=True)
+    title = _sql.Column(_sql.String, index=True)
+    by = _sql.Column(_sql.String, index=True, default="")
+    date = _sql.Column(_sql.String, default="")
+    date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+    date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+
+    owner = _orm.relationship("User", back_populates="fomrs")
