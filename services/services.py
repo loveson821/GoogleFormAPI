@@ -5,8 +5,6 @@ import database as _database
 from models import models as _models, schemas as _schemas
 import sqlalchemy.orm as _orm
 
-oauth2schema = _security.OAuth2PasswordBearer("/user/token")
-
 async def db_create_form(user: _schemas.User, db:_orm.Session, form:_schemas.FormCreate):
     form = _models.form(**form.dict(), owner_id=user.id)
     db.add(form)
