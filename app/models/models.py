@@ -27,6 +27,7 @@ class form(_db.Base):
     title = _sql.Column(_sql.String, index=True)
     text = _sql.Column(_sql.String, index=True)
     by = _sql.Column(_sql.String, index=True, default="")
+    deleted = _sql.Column(_sql.Boolean, default=False)
     date = _sql.Column(_sql.String, default="")
     date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)

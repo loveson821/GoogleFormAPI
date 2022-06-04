@@ -58,6 +58,7 @@ class _FormBase(_pydantic.BaseModel):
     by: str
     date: str
     text: Optional[str]
+    deleted: bool=False
 
 class FormCreate(_FormBase):
     pass

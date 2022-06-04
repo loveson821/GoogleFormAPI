@@ -30,8 +30,8 @@ async def db_get_form(form_id: str, user: _schemas.User, db:_orm.Session):
 
 async def db_delete_form(form_id: str, user: _schemas.User, db: _orm.Session):
     form = await _form_selector(form_id, user, db)
+    form.deleted = True
 
-    db.delete(form)
     db.commit()
 
 async def db_update_form(form_id: str, form: _schemas.FormCreate, user: _schemas.User, db: _orm.Session):
