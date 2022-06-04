@@ -28,25 +28,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post('/id')
-def post_id(formId: _schemas.postid, user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
-    global id
-    id = formId.id
-    return id
-
-@app.post('/addquestions')
-def app_quest(data: _schemas.questList, user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
-    global id
-    for q in data.questions:
-        if not len(q.formid):
-            q.formid = id
-        if not len(q.Type):
-            _services.create_textQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.para, q.idx)
-        else:
-            _services.create_choiceQuestion(q.formid, q.title, q.descr, q.required, q.point, q.ans, q.Type, q.options, q.shuffle, q.idx)
-
-    return "done"
-
 @app.get('/getform')
 def get_form(id: str, user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
     res = _services.get_form(id)

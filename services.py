@@ -178,12 +178,7 @@ import models as _models
 import schemas as _schemas
 import sqlalchemy.orm as _orm
 import passlib.hash as _hash
-import jwt as _jwt
-
-def utc2local(utc):
-    epoch = time.mktime(utc.timetuple())
-    offset = datetime.fromtimestamp(epoch) - datetime.utcfromtimestamp(epoch)
-    return utc + offset
+import jwt as _jw
 
 oauth2schema = _security.OAuth2PasswordBearer("/user/token")
 
@@ -295,7 +290,7 @@ async def db_update_form(id: int, form: _schemas.FormCreate, user: _schemas.User
     form_db.title = form.title
     form_db.by = form.by
     form_db.date = form.date
-    form_db.date_last_updated = utc2local(_dt.datetime.utcnow())
+    form_db.date_last_updated = _dt.datetime.utcnow()
 
     db.commit()
 

@@ -6,7 +6,6 @@ import passlib.hash as _hash
 
 import database as _database
 import services as _services
-_services.utc2local()
 
 class User(_database.Base):
     __tablename__ = "users"
@@ -29,7 +28,7 @@ class form(_database.Base):
     title = _sql.Column(_sql.String, index=True)
     by = _sql.Column(_sql.String, index=True, default="")
     date = _sql.Column(_sql.String, default="")
-    date_created = _sql.Column(_sql.DateTime, default=_services.utc2local(_dt.datetime.utcnow))
-    date_last_updated = _sql.Column(_sql.DateTime, default=_services.utc2local(_dt.datetime.utcnow))
+    date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+    date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
 
     owner = _orm.relationship("User", back_populates="fomrs")
