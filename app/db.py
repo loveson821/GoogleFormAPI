@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy.ext.declarative import declarative_base()
+from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy.orm as orm
 
 from dotenv import load_dotenv
