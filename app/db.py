@@ -1,12 +1,12 @@
-import sqlalchemy as _sql
-import sqlalchemy.ext.declarative as _declarative
-import sqlalchemy.orm as _orm
+import sqlalchemy as sa
+from sqlalchemy.ext.declarative import declarative_base()
+import sqlalchemy.orm as orm
 
 from dotenv import load_dotenv
 import os
 load_dotenv()
 
 DATABASE_URL = os.getenv('DATABASE_URL')
-engine = _sql.create_engine(DATABASE_URL)
-SessionLocal = _orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = _declarative.declarative_base()
+engine = sa.create_engine(DATABASE_URL)
+SessionLocal = orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
