@@ -122,7 +122,7 @@ async def db_get_forms(user: schemas.User = Depends(auth.get_current_user), db: 
 
 
 @app.get("/forms/{form_id}", status_code=200)
-async def db_get_form(form_id: str, user: schemas.User = Depends(auth.get_current_user), db: orm.Session = Depends(get_db)):
+async def db_get_form(form_id: str, user: schemas.User = Depends(auth.get_current_user),  db: orm.Session = Depends(get_db)):
     return await db_services.db_get_form(form_id, user, db)
 
 
