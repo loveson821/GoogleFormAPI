@@ -1,35 +1,36 @@
-import datetime as _dt
+import datetime
 
-import sqlalchemy as _sql
-import sqlalchemy.orm as _orm
-import passlib.hash as _hash
+import db as Db
+import passlib.hash as Hash
+import sqlalchemy as sa
+import sqlalchemy.orm as orm
 
-import db as _db
 
-class User(_db.Base):
+class User(Db.Base):
     __tablename__ = "users"
-    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
-    username = _sql.Column(_sql.String, unique=True, index=True)
-    hashed_password = _sql.Column(_sql.String)
+    id = sa.Column(sa.Integer, primary_key=True, index=True)
+    username = sa.Column(sa.String, unique=True, index=True)
+    hashed_password = sa.Column(sa.String)
 
-    fomrs = _orm.relationship("form", back_populates="owner")
+    fomrs = orm.relationship("form", back_populates="owner")
 
     def verify_password(self, password: str):
-        return _hash.bcrypt.verify(password, self.hashed_password)
+        return Hash.bcrypt.verify(password, self.hashed_password)
 
 
-class form(_db.Base):
+class form(Db.Base):
     __tablename__ = "forms"
-    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
-    owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
-    form_id = _sql.Column(_sql.String, index=True)
-    link = _sql.Column(_sql.String, index=True)
-    title = _sql.Column(_sql.String, index=True)
-    text = _sql.Column(_sql.String, index=True)
-    by = _sql.Column(_sql.String, index=True, default="")
-    deleted = _sql.Column(_sql.Boolean, default=False)
-    date = _sql.Column(_sql.String, default="")
-    date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
-    date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+    id = sa.Column(sa.Integer, primary_key=True, index=True)
+    owner_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
+    form_id = sa.Column(sa.String, index=True)
+    link = sa.Column(sa.String, index=True)
+    title = sa.Column(sa.String, index=True)
+    text = sa.Column(sa.String, index=True)
+    by = sa.Column(sa.String, index=True, default="")
+    deleted = sa.Column(sa.Boolean, default=False)
+    date = sa.Column(sa.String, default="")
+    date_created = sa.Column(sa.DateTime, default=datetime.datetime.utcnow)
+    date_last_updated = sa.Column(
+        sa.DateTime, default=datetime.datetime.utcnow)
 
-    owner = _orm.relationship("User", back_populates="fomrs")
+    owner = orm.relationship("User", back_populates="fomrs")
