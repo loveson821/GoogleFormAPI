@@ -50,7 +50,7 @@ async def authenticate_user(username: str, password: str, db: orm.Session):
 
 
 async def create_token(user: models.User):
-    user_obj = schemas.User.fromorm(user)
+    user_obj = schemas.User.from_orm(user)
 
     token = jwt.encode(user_obj.dict(), JWT_SECRET)
 
@@ -65,7 +65,7 @@ async def get_current_user(token: str = Depends(oauth2schema), db: orm.Session =
         raise HTTPException(
             status_code=401, detail="Invalid Username or Password")
 
-    return schemas.User.fromorm(user)
+    return schemas.User.from_orm(user)
 
 
 async def update_user(user: schemas.User, username: str, password: str, new_username: str, new_password: str, db: orm.Session):
