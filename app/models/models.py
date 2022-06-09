@@ -1,12 +1,12 @@
 import datetime
 
-import db as Db
+from db import Base
 import passlib.hash as Hash
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
 
 
-class User(Db.Base):
+class User(Base):
     __tablename__ = "users"
     id = sa.Column(sa.Integer, primary_key=True, index=True)
     username = sa.Column(sa.String, unique=True, index=True)
@@ -18,7 +18,7 @@ class User(Db.Base):
         return Hash.bcrypt.verify(password, self.hashed_password)
 
 
-class form(Db.Base):
+class form(Base):
     __tablename__ = "forms"
     id = sa.Column(sa.Integer, primary_key=True, index=True)
     owner_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
