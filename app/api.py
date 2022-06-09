@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 import db as Db
 from models import schemas
-from services import auth, db_services, form
+from services import auth, db_services, form as Form
 
 tags_metadata = [
     {
@@ -41,29 +41,29 @@ def get_db():
 
 @app.get('/getform', status_code=200)
 async def get_form(form_id: str, user: schemas.User = Depends(auth.get_current_user)):
-    res = form.get_form(form_id)
+    res = Form.get_form(form_id)
     return res
 
 
 @app.get('/getresponses', status_code=200)
 async def get_responses(form_id: str, user: schemas.User = Depends(auth.get_current_user)):
-    res = form.get_responses(form_id)
+    res = Form.get_responses(form_id)
     return res
 
 
 @app.post('/generate', status_code=200)
 async def gen(form: schemas.genQuiz, user: schemas.User = Depends(auth.get_current_user), db: orm.Session = Depends(get_db)):
-    result = form.create_form(form.docTitle, form.title, form.descr)
+    result = Form.create_form(form.docTitle, form.title, form.descr)
     id = result['formId']
 
     for q in form.questions:
         if not len(q.formid):
             q.formid = id
         if not len(q.Type):
-            form.create_textQuestion(
+            Form.create_textQuestion(
                 q.formid, q.title, q.descr, q.required, q.point, q.ans, q.para, q.idx)
         else:
-            form.create_choiceQuestion(
+            Form.create_choiceQuestion(
                 q.formid, q.title, q.descr, q.required, q.point, q.ans, q.Type, q.options, q.shuffle, q.idx)
 
     form_create = schemas.FormCreate(
