@@ -7,7 +7,8 @@ import sqlalchemy.orm as orm
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from models import models, schemas
+from models import models as Models
+from models import schemas as Schemas
 
 load_dotenv()
 
@@ -25,11 +26,11 @@ def get_db():
 
 
 async def get_user_by_username(username: str, db: orm.Session):
-    return db.query(models.User).filter(models.User.username == username).first()
+    return db.query(Models.User).filter(Models.User.username == username).first()
 
 
-async def create_user(user: schemas.UserCreate, db: orm.Session, token: str = Depends(oauth2schema)):
-    user_obj = models.User(username=user.username,
+async def create_user(user: Schemas.UserCreate, db: orm.Session, token: str = Depends(oauth2schema)):
+    user_obj = Models.User(username=user.username,
                            hashed_password=Hash.bcrypt.hash(user.password))
     db.add(user_obj)
     db.commit()
@@ -49,8 +50,8 @@ async def authenticate_user(username: str, password: str, db: orm.Session):
     return user
 
 
-async def create_token(user: models.User):
-    user_obj = schemas.User.from_orm(user)
+async def create_token(user: Models.User):
+    user_obj = Schemas.User.from_orm(user)
 
     token = jwt.encode(user_obj.dict(), JWT_SECRET)
 
@@ -60,15 +61,15 @@ async def create_token(user: models.User):
 async def get_current_user(token: str = Depends(oauth2schema), db: orm.Session = Depends(get_db)):
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        user = db.query(models.User).get(payload["id"])
+        user = db.query(Models.User).get(payload["id"])
     except:
         raise HTTPException(
             status_code=401, detail="Invalid Username or Password")
 
-    return schemas.User.from_orm(user)
+    return Schemas.User.from_orm(user)
 
 
-async def update_user(user: schemas.User, username: str, password: str, new_username: str, new_password: str, db: orm.Session):
+async def update_user(user: Schemas.User, username: str, password: str, new_username: str, new_password: str, db: orm.Session):
     if user.username != username:
         raise HTTPException(
             status_code=401, detail="Invalid Username")
@@ -84,7 +85,7 @@ async def update_user(user: schemas.User, username: str, password: str, new_user
     db.commit()
 
 
-async def delete_user(user: schemas.User, username: str, password: str, db: orm.Session):
+async def delete_user(user: Schemas.User, username: str, password: str, db: orm.Session):
     if user.username != username:
         raise HTTPException(
             status_code=401, detail="Invalid Username")
