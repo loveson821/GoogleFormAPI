@@ -78,8 +78,15 @@ async def update_user(user: Schemas.User, username: str, password: str, new_user
         raise HTTPException(
             status_code=401, detail="Invalid Password")
     if new_username != "":
+        db_user = await get_user_by_username(new_username, db)
+        if db_user:
+            raise HTTPException(
+                status_code=400, detail="Username already exists")
         user_obj.username = new_username
     if new_password != "":
+        if password == new_password:
+            raise HTTPException(
+                status_code=400, detail="Password unchange")
         user_obj.hashed_password = Hash.bcrypt.hash(new_password)
 
     db.commit()
