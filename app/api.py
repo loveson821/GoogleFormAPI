@@ -114,10 +114,6 @@ async def delete_user(username: str, password: str, user: Schemas.User = Depends
     await Auth.delete_user(user, username, password, db)
 
 
-# @app.post("/forms", response_model=Schemas.Form)
-# async def db_create_form(form: Schemas.FormCreate, user: Schemas.User=Depends(Auth.get_current_user), db:orm.Session=Depends(get_db)):
-#     return await Db_services.db_create_form(user, db, form)
-
 @app.get("/forms", response_model=List[Schemas.Form], status_code=200)
 async def db_get_forms(user: Schemas.User = Depends(Auth.get_current_user), db: orm.Session = Depends(get_db)):
     return await Db_services.db_get_forms(user, db)
@@ -133,9 +129,9 @@ async def db_delete_form(form_id: str, user: Schemas.User = Depends(Auth.get_cur
     await Db_services.db_delete_form(form_id, user, db)
 
 
-@app.put("/form/update/{form_id}", status_code=204)
-async def db_update_form(form_id: str, form: Schemas.FormCreate, user: Schemas.User = Depends(Auth.get_current_user), db: orm.Session = Depends(get_db)):
-    await Db_services.db_update_form(form_id, form, user, db)
+# @app.put("/form/update/{form_id}", status_code=204)
+# async def db_update_form(form_id: str, form: Schemas.FormCreate, user: Schemas.User = Depends(Auth.get_current_user), db: orm.Session = Depends(get_db)):
+#     await Db_services.db_update_form(form_id, form, user, db)
 
 
 if __name__ == '__main__':
