@@ -1,16 +1,20 @@
-import datetime as _dt
-import pydantic as _pydantic
+import datetime
 from typing import List, Optional
 
-class quiz(_pydantic.BaseModel):
+from pydantic import BaseModel
+
+
+class quiz(BaseModel):
     docTitle: str
     title: str
     descr: str = ""
 
-class postid(_pydantic.BaseModel):
+
+class postid(BaseModel):
     id: str
 
-class quest(_pydantic.BaseModel):
+
+class quest(BaseModel):
     formid: str = ""
     title: str
     descr: str = ""
@@ -23,10 +27,12 @@ class quest(_pydantic.BaseModel):
     shuffle: bool = True
     idx: int = 0
 
-class questList(_pydantic.BaseModel):
+
+class questList(BaseModel):
     questions: List[quest]
 
-class genQuiz(_pydantic.BaseModel):
+
+class genQuiz(BaseModel):
     docTitle: str
     title: str
     descr: str = ""
@@ -35,14 +41,18 @@ class genQuiz(_pydantic.BaseModel):
     questions: List[quest]
 
 # Users Authorization
-class _UserBase(_pydantic.BaseModel):
+
+
+class _UserBase(BaseModel):
     username: str
+
 
 class UserCreate(_UserBase):
     password: str
 
     class Config:
         orm_mode = True
+
 
 class User(_UserBase):
     id: int
@@ -51,22 +61,27 @@ class User(_UserBase):
         orm_mode = True
 
 # Form
-class _FormBase(_pydantic.BaseModel):
+
+
+class _FormBase(BaseModel):
     form_id: str
     link: str
     title: str
     by: str
     date: str
     text: Optional[str]
+    deleted: bool = False
+
 
 class FormCreate(_FormBase):
     pass
 
+
 class Form(_FormBase):
     id: int
     owner_id: int
-    date_created: _dt.datetime
-    date_last_updated: _dt.datetime
+    date_created: datetime.datetime
+    date_last_updated: datetime.datetime
 
     class Config:
         orm_mode = True
