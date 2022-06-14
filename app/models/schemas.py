@@ -60,6 +60,11 @@ class User(_UserBase):
     class Config:
         orm_mode = True
 
+class UserUpdate(BaseModel):
+    password: str
+    new_password: str= ""
+    new_username: str = ""
+
 # Form
 
 

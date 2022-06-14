@@ -99,9 +99,9 @@ async def get_user(user: Schemas.User = Depends(Auth.get_current_user)):
     return user
 
 
-@app.put("/user/update", status_code=204)
-async def update_user(username: str, password: str, new_username: str = "", new_password: str = "", user: Schemas.User = Depends(Auth.get_current_user), db: orm.Session = Depends(get_db)):
-    await Auth.update_user(user, username, password, new_username, new_password, db)
+@app.post("/user/update", status_code=204)
+async def update_user(update: Schemas.UserUpdate, user: Schemas.User = Depends(Auth.get_current_user), db: orm.Session = Depends(get_db)):
+    await Auth.update_user(user, update.password, update.new_username, update.new_password, db)
 
 
 @app.delete("/user/delete", status_code=204)
