@@ -36,12 +36,12 @@ class genQuiz(BaseModel):
     docTitle: str
     title: str
     descr: str = ""
+    text: str = ""
     by: str
     date: str
     questions: List[quest]
 
 # Users Authorization
-
 
 class _UserBase(BaseModel):
     username: str

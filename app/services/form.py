@@ -122,7 +122,7 @@ def gen_req(dict):
             "createItem": {
                 "item": {
                     "textItem": {},
-                    "title": dict["descr"]
+                    "title": dict["text"]
                 },
                 "location": {
                     "index": 0
