@@ -214,8 +214,12 @@ def get_responses(form_id):
     quest = {}
     items = form['items']
     for item in items:
+        if 'questionItem' not in item:
+            continue
         qid = item['questionItem']['question']['questionId']
-        quest[qid] = {'title': item['title'], 'correctAnswer': item['questionItem']['question']['grading']['correctAnswers']}
+        grading = item['questionItem']['question']['grading']
+        ans = grading['correctAnswers'] if 'correctAnswers' in grading else ""
+        quest[qid] = {'title': item['title'], 'correctAnswer': ans}
 
     res = form_service.forms().responses().list(formId=form_id).execute()
     if 'responses' not in res:
