@@ -3,7 +3,8 @@ from typing import List
 import sqlalchemy.orm as orm
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+#from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 
 import db as Db
@@ -135,4 +136,4 @@ async def db_delete_form(form_id: str, user: Schemas.User = Depends(Auth.get_cur
 
 
 if __name__ == '__main__':
-    uvicorn.run('api:app', host='127.0.0.1', port=5000)
+    uvicorn.run('api:app', host='0.0.0.0', port=8000, debug=True)
