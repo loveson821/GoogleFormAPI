@@ -69,11 +69,8 @@ async def get_current_user(token: str = Depends(oauth2schema), db: orm.Session =
     return Schemas.User.from_orm(user)
 
 
-async def update_user(user: Schemas.User, username: str, password: str, new_username: str, new_password: str, db: orm.Session):
-    if user.username != username:
-        raise HTTPException(
-            status_code=401, detail="Invalid Username")
-    user_obj = await authenticate_user(username, password, db)
+async def update_user(user: Schemas.User, password: str, new_username: str, new_password: str, db: orm.Session):
+    user_obj = await authenticate_user(user.username, password, db)
     if not user_obj:
         raise HTTPException(
             status_code=401, detail="Invalid Password")

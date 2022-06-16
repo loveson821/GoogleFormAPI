@@ -1,7 +1,8 @@
+import os
+
 from apiclient import discovery
 from httplib2 import Http
 from oauth2client import client, file, tools
-import os
 
 SCOPES = ["https://www.googleapis.com/auth/forms.body ", "https://www.googleapis.com/auth/drive"]
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
@@ -57,6 +58,83 @@ def create_form(docTitle="",title="",descr=""):
     form_service.forms().batchUpdate(formId=form_id, body=des).execute()
 
     return result
+
+def gen_req(dict):
+    req = []
+    for q in dict['questions']:
+
+        if not len(q["Type"]):
+            tmp = {
+                "createItem": {
+                    "item": {
+                        "title": q["title"],
+                        "description": q["descr"],
+                        "questionItem": {
+                            "question": {
+                                "required": q["required"],    
+                                "grading": {
+                                    "pointValue": q["point"],
+                                },
+                                "textQuestion": {
+                                    "paragraph": q["para"]
+                                }
+                            }
+                        }
+                    },
+                    "location": {
+                        "index": q["idx"]
+                    }
+                }
+            }
+            if not q["para"]:
+                tmp["createItem"]['item']['questionItem']['question']['grading']["correctAnswers"] = {"answers": q["ans"] }
+            req.append(tmp)
+        else:
+            tmp = {
+                "createItem": {
+                    "item": {
+                        "title": q["title"],
+                        "description": q["descr"],
+                        "questionItem": {
+                            "question": {
+                                "required": q["required"],    
+                                "grading": {
+                                    "pointValue": q["point"],
+                                    "correctAnswers": {
+                                        "answers": q["ans"]
+                                    }
+                                },
+                                "choiceQuestion": {
+                                    "type": q["Type"],
+                                    "options": q["options"],
+                                    "shuffle": q["shuffle"]
+                                }
+                            }
+                        }
+                    },
+                    "location": {
+                        "index": q["idx"]
+                    }
+                }
+            }
+            req.append(tmp)
+    req.append({
+            "createItem": {
+                "item": {
+                    "textItem": {},
+                    "title": dict["text"]
+                },
+                "location": {
+                    "index": 0
+                }
+            }
+        })
+
+    return req
+
+def create_items(req, form_id):
+    item_setting = form_service.forms().batchUpdate(formId=form_id, body=req).execute()
+    return item_setting
 
 def create_choiceQuestion(form_id,question="",descr="",required=True,point=0,ans=[{"value": ""}],Type="RADIO",options=[{"value": ""}],shuffle=True,idx=0):
     QUESTION = {
@@ -136,8 +214,12 @@ def get_responses(form_id):
     quest = {}
     items = form['items']
     for item in items:
+        if 'questionItem' not in item:
+            continue
         qid = item['questionItem']['question']['questionId']
-        quest[qid] = {'title': item['title'], 'correctAnswer': item['questionItem']['question']['grading']['correctAnswers']}
+        grading = item['questionItem']['question']['grading']
+        ans = grading['correctAnswers'] if 'correctAnswers' in grading else ""
+        quest[qid] = {'title': item['title'], 'correctAnswer': ans}
 
     res = form_service.forms().responses().list(formId=form_id).execute()
     if 'responses' not in res:

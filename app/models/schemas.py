@@ -36,12 +36,12 @@ class genQuiz(BaseModel):
     docTitle: str
     title: str
     descr: str = ""
+    text: str = ""
     by: str
     date: str
     questions: List[quest]
 
 # Users Authorization
-
 
 class _UserBase(BaseModel):
     username: str
@@ -59,6 +59,11 @@ class User(_UserBase):
 
     class Config:
         orm_mode = True
+
+class UserUpdate(BaseModel):
+    password: str
+    new_password: str= ""
+    new_username: str = ""
 
 # Form
 
