@@ -11,6 +11,7 @@ from models import schemas as Schemas
 from services import auth as Auth
 from services import db_services as Db_services
 from services import form as Form
+from services import rss as Rss
 
 tags_metadata = [
     {
@@ -58,16 +59,10 @@ async def gen(form: Schemas.genQuiz, user: Schemas.User = Depends(Auth.get_curre
     result = Form.create_form(form.docTitle, form.title, form.descr)
     id = result['formId']
 
-    for q in form.questions:
-        if not len(q.formid):
-            q.formid = id
-        if not len(q.Type):
-            Form.create_textQuestion(
-                q.formid, q.title, q.descr, q.required, q.point, q.ans, q.para, q.idx)
-        else:
-            Form.create_choiceQuestion(
-                q.formid, q.title, q.descr, q.required, q.point, q.ans, q.Type, q.options, q.shuffle, q.idx)
+    req = {}
+    req['requests'] = Form.gen_req(form.dict())
 
+    Form.create_items(req, id)
     form_create = Schemas.FormCreate(
         form_id=result['formId'], link=result["responderUri"], title=form.title, text=form.descr, by=form.by, date=form.date)
     await Db_services.db_create_form(user, db, form_create)
@@ -104,9 +99,9 @@ async def get_user(user: Schemas.User = Depends(Auth.get_current_user)):
     return user
 
 
-@app.put("/user/update", status_code=204)
-async def update_user(username: str, password: str, new_username: str = "", new_password: str = "", user: Schemas.User = Depends(Auth.get_current_user), db: orm.Session = Depends(get_db)):
-    await Auth.update_user(user, username, password, new_username, new_password, db)
+@app.post("/user/update", status_code=204)
+async def update_user(update: Schemas.UserUpdate, user: Schemas.User = Depends(Auth.get_current_user), db: orm.Session = Depends(get_db)):
+    await Auth.update_user(user, update.password, update.new_username, update.new_password, db)
 
 
 @app.delete("/user/delete", status_code=204)
@@ -132,6 +127,13 @@ async def db_delete_form(form_id: str, user: Schemas.User = Depends(Auth.get_cur
 # @app.put("/form/update/{form_id}", status_code=204)
 # async def db_update_form(form_id: str, form: Schemas.FormCreate, user: Schemas.User = Depends(Auth.get_current_user), db: orm.Session = Depends(get_db)):
 #     await Db_services.db_update_form(form_id, form, user, db)
+
+
+# Rss Feed
+@app.get('/rss', status_code=200)
+async def rss(url: str, limit: int=999, detail: bool=False):
+    res = Rss.rss(url=url, limit=limit, detail=detail)
+    return res
 
 
 if __name__ == '__main__':
