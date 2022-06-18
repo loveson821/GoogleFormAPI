@@ -118,17 +118,17 @@ def gen_req(dict):
                 }
             }
             req.append(tmp)
-    req.append({
-            "createItem": {
-                "item": {
-                    "textItem": {},
-                    "title": dict["text"]
-                },
-                "location": {
-                    "index": 0
-                }
-            }
-        })
+    # req.append({
+    #         "createItem": {
+    #             "item": {
+    #                 "textItem": {},
+    #                 "title": dict["text"]
+    #             },
+    #             "location": {
+    #                 "index": 0
+    #             }
+    #         }
+    #     })
 
     return req
 

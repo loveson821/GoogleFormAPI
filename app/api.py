@@ -57,7 +57,7 @@ async def get_responses(form_id: str, user: Schemas.User = Depends(Auth.get_curr
 
 @app.post('/generate', status_code=200)
 async def gen(form: Schemas.genQuiz, user: Schemas.User = Depends(Auth.get_current_user), db: orm.Session = Depends(get_db)):
-    result = Form.create_form(form.docTitle, form.title, form.descr)
+    result = Form.create_form(form.docTitle, form.title, form.text)
     id = result['formId']
 
     req = {}
@@ -65,7 +65,7 @@ async def gen(form: Schemas.genQuiz, user: Schemas.User = Depends(Auth.get_curre
 
     Form.create_items(req, id)
     form_create = Schemas.FormCreate(
-        form_id=result['formId'], link=result["responderUri"], title=form.title, text=form.descr, by=form.by, date=form.date)
+        form_id=result['formId'], link=result["responderUri"], title=form.title, text=form.text, by=form.by, date=form.date)
     await Db_services.db_create_form(user, db, form_create)
     return {"id": id, "link": result["responderUri"]}
 
