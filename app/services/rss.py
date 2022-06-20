@@ -1,20 +1,26 @@
 import requests
 import untangle
 from bs4 import BeautifulSoup
+import random
 
-
-def rss(url, limit=10, detail=False):
+def rss(url, limit=10, detail=False, Random=False):
     return_list = []
+    article = []
     res = requests.get(url)
     items = untangle.parse(res.text).rss.channel.item
-    for idx, item in enumerate(items):
-        if limit < idx+1:
-            return return_list
+    for item in items:
         tmp = {}
         tmp['title'] = item.title.cdata
         tmp['link'] = item.guid.cdata
+        article.append(tmp)
+    if Random:
+        random.shuffle(article)
+    for idx in range(len(article)):
+        if limit < idx+1:
+            return return_list
+        tmp = article[idx]
         if detail:
-            link = item.guid.cdata
+            link = tmp['link']
             if 'bbc' in url:
                 tmp['content'] = bbc(link)
             elif 'cnn' in url:
