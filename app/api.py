@@ -12,6 +12,7 @@ from services import auth as Auth
 from services import db_services as Db_services
 from services import form as Form
 from services import rss as Rss
+from services import summarize as Summarize
 
 tags_metadata = [
     {
@@ -131,9 +132,17 @@ async def db_delete_form(form_id: str, user: Schemas.User = Depends(Auth.get_cur
 
 # Rss Feed
 @app.get('/rss', status_code=200)
-async def rss(url: str, limit: int=999, detail: bool=False, Random: bool=False):
+async def rss(url: str, limit: int = 999, detail: bool = False, Random: bool = False):
     res = Rss.rss(url=url, limit=limit, detail=detail, Random=Random)
     return res
+
+# Summarizer
+
+
+@app.post('/sum')
+def summarize(source: Schemas.summarize_text):
+    outputs = Summarize.summarize(source.text, source.percent)
+    return{"outputs": outputs}
 
 
 if __name__ == '__main__':
