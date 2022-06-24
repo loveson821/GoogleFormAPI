@@ -134,7 +134,7 @@ async def db_delete_form(form_id: str, user: Schemas.User = Depends(Auth.get_cur
 # Rss Feed
 @app.get('/rss', status_code=200)
 async def rss(url: str, limit: int = 999, detail: bool = False, Random: bool = False):
-    res = Rss.rss(url=url, limit=limit, detail=detail, Random=Random)
+    res = Rss.rss(url=url, limit=limit, detail=detail, random=Random)
     return res
 
 # Summarizer
