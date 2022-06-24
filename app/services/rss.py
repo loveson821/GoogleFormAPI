@@ -3,7 +3,7 @@ import untangle
 from bs4 import BeautifulSoup
 import random
 
-def rss(url, limit=10, detail=False, Random=False):
+def rss(url, limit=10, detail=False, random=False):
     return_list = []
     article = []
     res = requests.get(url)
@@ -13,7 +13,7 @@ def rss(url, limit=10, detail=False, Random=False):
         tmp['title'] = item.title.cdata
         tmp['link'] = item.guid.cdata
         article.append(tmp)
-    if Random:
+    if random:
         random.shuffle(article)
     for idx in range(len(article)):
         if limit < idx+1:
