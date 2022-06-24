@@ -43,6 +43,7 @@ class genQuiz(BaseModel):
 
 # Users Authorization
 
+
 class _UserBase(BaseModel):
     username: str
 
@@ -60,9 +61,10 @@ class User(_UserBase):
     class Config:
         orm_mode = True
 
+
 class UserUpdate(BaseModel):
     password: str
-    new_password: str= ""
+    new_password: str = ""
     new_username: str = ""
 
 # Form
@@ -90,3 +92,10 @@ class Form(_FormBase):
 
     class Config:
         orm_mode = True
+
+# Summarize
+
+
+class summarize_text(BaseModel):
+    text: str
+    percent: float
